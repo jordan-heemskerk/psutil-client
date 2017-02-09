@@ -1,0 +1,72 @@
+<html>
+
+<head>
+  
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-websocket/dist/angular-websocket.js"></script>
+  <script src="bower_components/angular-percent-circle-directive/dist/percent-circle-directive.js" type="text/javascript"></script>
+
+
+  <link rel="stylesheet" type="text/css" href="bower_components/angular-percent-circle-directive/dist/percent-circle.css">
+  
+  <script>
+    angular.module('myApp', [
+      'angular-websocket', // you may also use 'angular-websocket' if you prefer
+      'percentCircle-directive'
+    ])
+    //                          WebSocket works as well
+    .factory('MyData', function($websocket) {
+      // Open a WebSocket connection
+
+      var dataStream = $websocket('ws://127.0.0.1:9000');
+
+      var collection = [];
+
+      dataStream.onMessage(function(message) {
+        collection.push(JSON.parse(message.data));
+      });
+
+      var methods = {
+        collection: collection,
+      };
+
+      return methods;
+    })
+    .controller('SomeController', function ($scope, MyData) {
+      $scope.MyData = MyData;
+    });
+
+    console.log("Something else")
+  </script>
+
+</head>
+<body ng-app="myApp">
+  <section ng-controller="SomeController">
+   {{ latest = MyData.collection[MyData.collection.length - 1];"" }} 
+    <ul>
+      <li>
+        cpuinfo:
+        <div>
+        <div style="width: 200px;"  ng-repeat="cpuper in latest.cpuinfo track by $index">
+            <percent-circle percent="cpuper" speed="30"></percent-circle>
+        </div>
+        </div>
+      </li>
+      <li>
+          users:
+          <ul>
+            <li ng-repeat="users in latest.users track by $index">
+                {{users[0]}}
+            </li>
+          </ul>
+        </li>
+        <li>
+            meminfo:
+            <div style="width: 200px;">
+                <percent-circle percent="latest.meminfo[2]" speed="30"></percent-circle> 
+            </div>
+        </li>
+    </ul>
+  </section>
+</body>
+</html>

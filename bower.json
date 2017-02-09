@@ -16,6 +16,9 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "^1.6.1"
+    "angular": "^1.6.1",
+    "angular-websocket": "^2.0.0",
+    "angular-percent-circle-directive": "^1.1.0",
+    "angular-bootstrap": "^2.5.0"
   }
 }
